@@ -147,6 +147,12 @@ where
     }
 }
 
+impl<T: BorshSerialize> BorshSerialize for &T {
+    fn serialize<W: Write>(&self, writer: &mut W) -> Result<(), Error> {
+        (*self).serialize(writer)
+    }
+}
+
 #[cfg(feature = "std")]
 impl<T> BorshSerialize for HashSet<T>
 where
@@ -255,6 +261,12 @@ impl BorshSerialize for Box<[u8]> {
     fn serialize<W: Write>(&self, writer: &mut W) -> Result<(), Error> {
         (self.len() as u32).serialize(writer)?;
         writer.write_all(self)
+    }
+}
+
+impl<T: BorshSerialize> BorshSerialize for Box<T> {
+    fn serialize<W: Write>(&self, writer: &mut W) -> Result<(), Error> {
+        (&**self).serialize(writer)
     }
 }
 
