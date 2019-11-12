@@ -126,6 +126,6 @@ fn test_evil_bytes() {
         <Vec<[u8; 32]>>::try_from_slice(&bytes)
             .unwrap_err()
             .to_string(),
-        "failed to fill whole buffer"
+        "error deserializing element at index 0: failed to fill whole buffer"
     );
 }
