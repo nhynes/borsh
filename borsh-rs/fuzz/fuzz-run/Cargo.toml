@@ -11,4 +11,4 @@ path = "src/main.rs"
 
 [dependencies]
 honggfuzz = "0.5"
-borsh = { path = "../../borsh" }
+oasis-borsh = { path = "../../borsh" }
