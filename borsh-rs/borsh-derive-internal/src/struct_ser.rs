@@ -1,7 +1,7 @@
 use crate::attribute_helpers::contains_skip;
 use quote::quote;
 use syn::export::{Span, TokenStream2};
-use syn::{Fields, Index, ItemStruct};
+use syn::{Fields, Index, ItemStruct, Type};
 
 pub fn struct_ser(input: &ItemStruct) -> syn::Result<TokenStream2> {
     let name = &input.ident;
@@ -13,8 +13,12 @@ pub fn struct_ser(input: &ItemStruct) -> syn::Result<TokenStream2> {
                     continue;
                 }
                 let field_name = field.ident.as_ref().unwrap();
+                let ref_token = match field.ty {
+                    Type::Reference(_) | Type::Slice(_) => { quote!() },
+                    _ => quote!(&)
+                };
                 let delta = quote! {
-                    oasis_borsh::BorshSerialize::serialize(&self.#field_name, writer)?;
+                    oasis_borsh::BorshSerialize::serialize(#ref_token self.#field_name, writer)?;
                 };
                 body.extend(delta);
             }
